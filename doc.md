@@ -1,4 +1,4 @@
-﻿# Arbeitsauftrag Indizes (Fabian & Jan)
+# Arbeitsauftrag Indizes (Fabian & Jan)
 
 ## Was ist ein Index?
 
@@ -27,6 +27,7 @@ select * from Codehier
 ```
 
 ## Wie kann ein Index beurteilt werden?
+
 Indizes ermöglichen einen Zugriff auf Daten in einer umfangreichen Datensammlung.
 Die Datenbank muss somit nur nach Indizes suchen, welche oft chronologiesch angeordnet sind.
 Sonst müsste die Datenbank den kompletten Datensatz abgleichen.
@@ -44,5 +45,16 @@ Select @t3
 ```
 
 ## Was bringt ein Index bei vielen Datensätzen?
+Mithilfe des Indexes kann man grössere Mengen von Daten in kürzerer Zeit durchsuchen. Dazu haben wir mithilfe eines Scriptes eine DB mit Daten erstellt und zuerst ohne und dann mit Index die folgende Anfrage abgespielt:
+```sql
+select * from Spieler where Position = 'Mittelfeld'
+```
+
+```sql
+CREATE INDEX index_name
+ON table_name (column1, column2, ...);
+```
+
+Die Messungen bestätigen, dass der Index schneller ist.
 
 ## Was bringt ein Index bei vielen Tabellen bzw. Beziehungen zwischen den Tabellen?
