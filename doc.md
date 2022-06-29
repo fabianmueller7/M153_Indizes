@@ -41,7 +41,7 @@ SET @t1 = GETDATE();
 SELECT * From Spieler
 SET @t2 = GETDATE();
 SET @t3 = DATEDIFF(millisecond,@t1,@t2);
-Select @t3
+Select @t3 as "Dauer in ms"
 ```
 
 ## Was bringt ein Index bei vielen Datensätzen?
@@ -58,3 +58,42 @@ ON table_name (column1, column2, ...);
 Die Messungen bestätigen, dass der Index schneller ist.
 
 ## Was bringt ein Index bei vielen Tabellen bzw. Beziehungen zwischen den Tabellen?
+
+Tabelle mit allen Spielern absteigend nach ihren Fereinsjahren
+```sql
+DECLARE @t1 DATETIME;
+DECLARE @t2 DATETIME;
+DECLARE @t3 INT;
+
+SET @t1 = GETDATE();
+Select CONCAT(Spieler.Nachname, ' ' , Spieler.Vorname) as 'Spieler', DATEDIFF(year,spielt.von, CURRENT_TIMESTAMP) as 'Jahre im Ferein',  DATEDIFF(year,Spieler.Geburtsdatum, CURRENT_TIMESTAMP) as 'Alter', Mannschaft.Klubname as 'Klub'
+FROM Mannschaft
+join spielt on spielt.fk_MannschaftID = Mannschaft.id
+join Spieler on Spieler.id = spielt.fk_SpielerID
+Order By 'Jahre im Ferein' desc
+
+SET @t2 = GETDATE();
+SET @t3 = DATEDIFF(millisecond,@t1,@t2);
+Select @t3 as "Dauer in ms"
+```
+
+Tabelle mit dem Durchschnitt aller Fifa Ranking Gesamt Ratings der Spieler einer Mannschaft
+```sql
+DECLARE @t1 DATETIME;
+DECLARE @t2 DATETIME;
+DECLARE @t3 INT;
+
+SET @t1 = GETDATE();
+
+Select Mannschaft.Klubname as 'Klub', AVG([Fifa Ranking].[Gesamt Rating]) as "Durchschnittliche Spieler stärke"
+From Mannschaft
+join spielt on spielt.fk_MannschaftID = Mannschaft.id
+join Spieler on Spieler.id = spielt.fk_SpielerID
+join "Fifa Ranking" on Spieler.id = [Fifa Ranking].fk_SpielerID
+Group by Mannschaft.id, Mannschaft.Klubname
+Order By "Durchschnittliche Spieler stärke" asc
+
+SET @t2 = GETDATE();
+SET @t3 = DATEDIFF(millisecond,@t1,@t2);
+Select @t3 as "Dauer in ms"
+```
